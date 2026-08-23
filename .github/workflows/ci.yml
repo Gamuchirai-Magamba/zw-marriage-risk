@@ -31,3 +31,13 @@ jobs:
 
       - name: Test
         run: pytest -v -m "not slow"
+
+      - name: Install zw-gender-data
+        # Not on PyPI yet, so install it straight from GitHub. Once it is
+        # published this step goes away and the dependency resolves normally.
+        run: pip install "zw-gender-data @ git+https://github.com/Gamuchirai-Magamba/zw-gender-data.git@main"
+
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[dev,app]"
