@@ -7,7 +7,7 @@ District-level prevalence estimates with honest uncertainty.
 [![python](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org)
 [![license](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
-### 🗺️ [Open the map](https://zw-marriage-risk-4utpnywt5sqnwhn4ay5bur.streamlit.app/) · [API docs](https://YOUR-API.onrender.com/docs) · [Model card](MODEL_CARD.md)
+### 🗺️ [Open the map](https://zw-marriage-risk-4utpnywt5sqnwhn4ay5bur.streamlit.app/) · [API docs](https://zw-marriage-risk.onrender.com/docs) · [Model card](MODEL_CARD.md)
 
 ---
 
