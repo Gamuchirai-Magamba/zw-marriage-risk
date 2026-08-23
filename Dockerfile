@@ -17,6 +17,11 @@ RUN pip install --no-cache-dir --no-deps .
 # .dockerignore blocks it from the build context as well.
 COPY --chown=app:app app_data ./app_data
 
+# Be explicit about where the data is. Letting the code infer it from
+# __file__ works in the repo and breaks in site-packages - which is a
+# bug you only discover on deploy.
+ENV ZWMR_APP_DATA=/home/app/app_data
+
 USER app
 EXPOSE 8000
 

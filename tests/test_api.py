@@ -122,3 +122,45 @@ def test_api_does_not_import_the_modelling_stack():
     assert r.returncode == 0, (
         f"importing the API pulled in the modelling stack - {r.stderr.strip()}"
     )
+
+
+class TestDataLocation:
+    """Where the API looks for its data.
+
+    The first Render deploy failed here: the path was computed from
+    __file__ assuming the repo layout, which is wrong once the package is
+    installed into site-packages. These tests pin the behaviour that
+    fixes it.
+    """
+
+    def test_env_var_wins(self, tmp_path, monkeypatch):
+        from zw_marriage_risk import api
+
+        monkeypatch.setenv(api.APP_DATA_ENV, str(tmp_path))
+        assert api.resolve_app_data() == tmp_path
+
+    def test_falls_back_to_a_real_location(self, monkeypatch):
+        from zw_marriage_risk import api
+
+        monkeypatch.delenv(api.APP_DATA_ENV, raising=False)
+        found = api.resolve_app_data()
+        assert (found / "districts.json").exists(), (
+            f"could not find app_data - looked in {api._candidate_dirs()}"
+        )
+
+    def test_missing_data_error_says_where_it_looked(self, tmp_path, monkeypatch):
+        """A 503 that does not say what is missing costs an hour."""
+        from zw_marriage_risk import api
+
+        monkeypatch.setenv(api.APP_DATA_ENV, str(tmp_path / "nope"))
+        api._load.cache_clear()
+        try:
+            with pytest.raises(RuntimeError) as exc:
+                api._load()
+            message = str(exc.value)
+            assert "districts.json" in message
+            assert api.APP_DATA_ENV in message
+            assert "Searched" in message
+        finally:
+            monkeypatch.delenv(api.APP_DATA_ENV, raising=False)
+            api._load.cache_clear()

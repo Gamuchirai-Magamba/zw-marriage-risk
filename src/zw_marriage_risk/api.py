@@ -23,13 +23,55 @@ place with those characteristics.
 from __future__ import annotations
 
 import json
+import os
 from functools import lru_cache
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 
-APP_DATA = Path(__file__).resolve().parents[2] / "app_data"
+#: Environment variable that overrides where the frozen data lives.
+#: Containers should set this - see the Dockerfile.
+APP_DATA_ENV = "ZWMR_APP_DATA"
+
+
+def _candidate_dirs() -> list[Path]:
+    """Places ``app_data/`` might be, most explicit first.
+
+    Why this is not a single hard-coded path: the package runs from two
+    quite different layouts.
+
+    * **From the repo** it lives at ``<repo>/src/zw_marriage_risk/api.py``,
+      so ``app_data/`` is three levels up.
+    * **Installed in a container** it lives in ``site-packages/``, where
+      three levels up is ``/usr/local/lib/`` - nowhere near the data.
+
+    Guessing from ``__file__`` alone works locally and fails on deploy,
+    which is a bad way round for a bug to happen. So the environment
+    variable comes first and the working directory second.
+    """
+    here = Path(__file__).resolve()
+    return [
+        Path.cwd() / "app_data",          # container WORKDIR, or repo root
+        here.parents[2] / "app_data",     # <repo>/src/pkg/api.py  -> <repo>/
+        here.parent / "app_data",         # data shipped inside the package
+    ]
+
+
+def resolve_app_data() -> Path:
+    """Find the frozen model output, or return the best guess for the error."""
+    override = os.getenv(APP_DATA_ENV)
+    if override:
+        return Path(override)
+
+    for candidate in _candidate_dirs():
+        if (candidate / "districts.json").exists():
+            return candidate
+
+    return _candidate_dirs()[0]
+
+
+APP_DATA = resolve_app_data()
 
 
 # --------------------------------------------------------------- schemas
@@ -91,11 +133,16 @@ class Estimate(BaseModel):
 @lru_cache(maxsize=1)
 def _load() -> tuple[dict, dict]:
     """Read the frozen model output once, at first request."""
-    dpath, mpath = APP_DATA / "districts.json", APP_DATA / "meta.json"
+    base = resolve_app_data()
+    dpath, mpath = base / "districts.json", base / "meta.json"
     if not dpath.exists():
+        looked = "\n  ".join(str(p) for p in _candidate_dirs())
         raise RuntimeError(
-            f"{dpath} not found. Run `python export_app_data.py` first - the API "
-            "serves frozen output, it does not fit the model."
+            f"districts.json not found at {dpath}.\n"
+            f"Set {APP_DATA_ENV} to the folder containing it, or run "
+            f"`python export_app_data.py` to create it.\n"
+            f"Searched:\n  {looked}\n"
+            f"(cwd is {Path.cwd()})"
         )
     districts = {d["district"]: d for d in json.loads(dpath.read_text())}
     meta = json.loads(mpath.read_text())
