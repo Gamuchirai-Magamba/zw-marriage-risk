@@ -100,3 +100,25 @@ def test_no_individual_scoring_endpoint_exists():
     paths = {r.path for r in app.routes}
     for banned in ("/score", "/predict", "/risk", "/individual", "/person"):
         assert banned not in paths
+
+
+def test_api_does_not_import_the_modelling_stack():
+    """The deployed container installs only FastAPI and Pydantic.
+
+    If someone makes the package __init__ import data/model/explain
+    eagerly, this test fails here rather than on Render five minutes
+    into a build. That is exactly how this bug was found the first time.
+    """
+    import subprocess
+    import sys
+
+    code = (
+        "import sys, zw_marriage_risk.api;"
+        "heavy={'numpy','pandas','statsmodels','geopandas','sklearn'};"
+        "loaded=heavy & set(sys.modules);"
+        "sys.exit('imported: ' + ', '.join(sorted(loaded)) if loaded else 0)"
+    )
+    r = subprocess.run([sys.executable, "-c", code], capture_output=True, text=True)
+    assert r.returncode == 0, (
+        f"importing the API pulled in the modelling stack - {r.stderr.strip()}"
+    )
