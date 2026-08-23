@@ -1,0 +1,8 @@
+# Streamlit Community Cloud reads this file.
+#
+# The app reads only app_data/*.json - frozen model output. It does not
+# fit anything, so none of the modelling stack is needed here. That is a
+# consequence of the export step, and it keeps the deploy small and fast.
+streamlit>=1.33
+plotly>=5.20
+pandas>=2.0

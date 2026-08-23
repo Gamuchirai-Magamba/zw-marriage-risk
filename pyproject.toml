@@ -1,0 +1,49 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "zw-marriage-risk"
+version = "0.1.0"
+description = "District-level child marriage prevalence estimates for Zimbabwe, with uncertainty"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Gamuchirai Nomsa Magamba" }]
+
+dependencies = [
+    "zw-gender-data>=0.1.0",
+    "pandas>=2.0",
+    "numpy>=1.24",
+    "statsmodels>=0.14",
+    "scikit-learn>=1.4",
+    "geopandas>=0.14",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=7.4", "pytest-cov>=4.1", "ruff>=0.6"]
+app = ["fastapi>=0.110", "uvicorn>=0.29", "streamlit>=1.33", "plotly>=5.20"]
+viz = ["matplotlib>=3.8", "shap>=0.45"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src", "."]
+markers = ["slow: fits the model repeatedly (deselect with -m 'not slow')"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.ruff.lint.per-file-ignores]
+# These are report-printing scripts. Their long lines are formatted output,
+# and breaking them would make the printed report harder to read than the
+# source is to lint.
+"fit_model.py" = ["E501"]
+"show_the_problem.py" = ["E501"]
+"explain_model.py" = ["E501"]

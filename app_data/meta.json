@@ -1,0 +1,76 @@
+{
+  "generated_from": {
+    "surveys": [
+      "Zimbabwe DHS 2015",
+      "Zimbabwe MICS 2019 (MICS6)"
+    ],
+    "women": 3487,
+    "clusters": 839,
+    "districts": 91
+  },
+  "model": {
+    "type": "multilevel logistic regression, random intercept by district",
+    "fitted_with": "statsmodels BinomialBayesMixedGLM (variational Bayes)",
+    "formula": "y ~ education + wealth + rural + survey_mics + nightlights_composite + travel_times_2015 + un_population_density_2015 + enhanced_vegetation_index_2015 + aridity_2015",
+    "coefficients": {
+      "Intercept": 2.1192143097307516,
+      "education": -1.1035817564218915,
+      "wealth": -0.309393737880045,
+      "rural": 0.09801958191830897,
+      "survey_mics": 0.09432442151702612,
+      "nightlights_composite": -0.13150489501483456,
+      "travel_times_2015": -0.336825793837238,
+      "un_population_density_2015": 0.1224730860810814,
+      "enhanced_vegetation_index_2015": 0.20304514586740072,
+      "aridity_2015": -0.053976241886236564
+    }
+  },
+  "validation": {
+    "cv_model_mae": 11.07,
+    "cv_baseline_mae": 13.91,
+    "calibration_mean_abs_gap": 2.81
+  },
+  "fairness_by_wealth": [
+    {
+      "level": 1.0,
+      "n": 515,
+      "actual": 51.773,
+      "predicted": 54.315,
+      "brier": 0.226
+    },
+    {
+      "level": 2.0,
+      "n": 510,
+      "actual": 48.228,
+      "predicted": 44.645,
+      "brier": 0.22
+    },
+    {
+      "level": 3.0,
+      "n": 511,
+      "actual": 36.514,
+      "predicted": 36.54,
+      "brier": 0.211
+    },
+    {
+      "level": 4.0,
+      "n": 939,
+      "actual": 31.827,
+      "predicted": 26.415,
+      "brier": 0.197
+    },
+    {
+      "level": 5.0,
+      "n": 1012,
+      "actual": 12.78,
+      "predicted": 15.417,
+      "brier": 0.106
+    }
+  ],
+  "caveats": [
+    "Estimates describe places, never individuals.",
+    "Data is from 2015 and 2019; the 2023-24 DHS microdata is not yet public.",
+    "The model is least accurate for the poorest wealth quintile (Brier 0.226 vs 0.106 for the richest).",
+    "Variational Bayes understates uncertainty; treat intervals as a floor."
+  ]
+}

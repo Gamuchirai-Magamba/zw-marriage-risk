@@ -1,0 +1,12 @@
+# One-click deploy config for Render. Free tier: 750 hours/month,
+# spins down after ~15 minutes idle (30-50s cold start).
+services:
+  - type: web
+    name: zw-marriage-risk-api
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHONUNBUFFERED
+        value: "1"

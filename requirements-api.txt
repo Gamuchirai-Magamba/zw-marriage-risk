@@ -1,0 +1,6 @@
+# Runtime dependencies for the API container. Same reasoning as
+# requirements.txt: api.py serves frozen JSON, so statsmodels,
+# scikit-learn and geopandas are build-time only.
+fastapi>=0.110
+uvicorn[standard]>=0.29
+pydantic>=2.0

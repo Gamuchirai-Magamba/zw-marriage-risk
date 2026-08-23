@@ -1,0 +1,13 @@
+paths.py
+outputs/
+notebooks/
+tests/
+.git/
+.venv/
+__pycache__/
+*.pyc
+# belt and braces - microdata must never reach the build context
+*.DTA
+*.sav
+*.shp
+*.dbf

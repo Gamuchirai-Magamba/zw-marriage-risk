@@ -1,0 +1,45 @@
+# ============ DATA: never commit ============
+data/raw/
+data/interim/
+*.DTA
+*.dta
+*.sav
+*.SAV
+*.shp
+*.shx
+*.dbf
+*.prj
+*.sbn
+*.sbx
+*.cpg
+*.qmd
+*.csv
+*.xlsx
+
+# ============ local config ============
+paths.py
+.env
+
+# ============ python ============
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.ipynb_checkpoints/
+.venv/
+venv/
+
+# ============ os ============
+Thumbs.db
+.DS_Store
+
+# --- app_data is DERIVED district-level output, not microdata ---
+# It must ship: the deployed app and the API read only these files.
+!app_data/
+!app_data/*.json
+!app_data/*.geojson
