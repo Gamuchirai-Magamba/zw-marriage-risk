@@ -12,7 +12,7 @@ license = { text = "MIT" }
 authors = [{ name = "Gamuchirai Nomsa Magamba" }]
 
 dependencies = [
-    "zw-gender-data @ git+https://github.com/Gamuchirai-Magamba/zw-gender-data.git@main",,
+    "zw-gender-data @ git+https://github.com/Gamuchirai-Magamba/zw-gender-data.git@main",
     "pandas>=2.0",
     "numpy>=1.24",
     "statsmodels>=0.14",
