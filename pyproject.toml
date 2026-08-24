@@ -21,7 +21,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-dev = ["pytest>=7.4", "pytest-cov>=4.1", "ruff>=0.6"]
+dev = ["pytest>=7.4", "pytest-cov>=4.1", "ruff>=0.6", "httpx2>=2.0"]
 app = ["fastapi>=0.110", "uvicorn>=0.29", "streamlit>=1.33", "plotly>=5.20"]
 viz = ["matplotlib>=3.8", "shap>=0.45"]
 
