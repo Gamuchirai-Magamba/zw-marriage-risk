@@ -11,8 +11,7 @@ District-level prevalence estimates with honest uncertainty.
 
 ---
 
-![The map](outputs/screenshot.png)
-
+![The map](outputsscreenshot.png)
 ---
 
 ## The problem
